@@ -4,14 +4,16 @@
 
 使用说明：
 1.首先运行init.sh   该脚本只需在初次运行脚本或者修改了新闻数目参数后运行一次即可:
-2.修改loadRSS.sh中的新闻数目使其与init.sh中的新闻数目相同
-3.在crontab种添加如下配置：
-“
-MAILTO=name@yourserver
-0 * * * * /usr/local/iHIT/loadRSS.sh 2>/tmp/maildata
-5 * * * * cat /var/www/iHIT/info >> /tmp/maildata
-6 * * * * mail -s "loadRSS.sh running station..." name@yourserver < /tmp/maildata
-”
+2.修改loadRSS.sh中的新闻数目使其与init.sh中的新闻数目相同;
+3.修改loadRSS.sh中的httpserver变量使其指向你运行脚本的服务器；
+4.在crontab种添加如下配置：
+    “
+        MAILTO=name@yourserver
+        0 * * * * /usr/local/iHIT/loadRSS.sh 2>/tmp/maildata
+        5 * * * * cat /var/www/iHIT/info >> /tmp/maildata
+        6 * * * * mail -s "loadRSS.sh running station..." name@yourserver < /tmp/maildata
+    ”
+
 TIPS:
 Crontab的配置使loadRSS.sh每隔一小时运行一次，同时将运行结果发送到name@yourserver中，将错误信息以“loadRSS.sh running station…”为主题发送到邮箱中。
 crontab的自动邮件发送需要mailx的支持，如需要运行结果的推送，请安装mailx，并将mailx设置为internet模式
