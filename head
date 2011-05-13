@@ -1,0 +1,27 @@
+<html>
+<head>
+	<meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+	
+	<!--下面四行使用引入lightbox-->
+	<link rel="stylesheet" href="lightbox.css" type="text/css" media="screen" />	
+	<script src="prototype.js" type="text/javascript"></script>
+	<script src="scriptaculous.js?load=effects,builder" type="text/javascript"></script>
+	<script src="lightbox.js" type="text/javascript"></script>
+	
+	<style>
+		body{
+			color:#000000;
+			background-color:#FFFFFF;
+			padding:10px;
+		}
+		
+		img.smallPic{
+			float:right;
+			padding:10px;
+		}
+	</style>	
+</head>
+
+<body>
+	<div style="-webkit-text-size-adjust:150%">
+	<p style="font-family:verdana;font-size:80%;text-align:center">

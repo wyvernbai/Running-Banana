@@ -40,6 +40,7 @@ echo "last news's time: $lasttime"
 #    mkdir $localserver/$i
 #done
 
+httpserver="http://219.217.227.65/iHIT"
 mainurl="http://today.hit.edu.cn"
 url="http://today.hit.edu.cn/rss.xml"
 
@@ -49,11 +50,7 @@ iconv --from-code=gb18030 --to-code=UTF-8 lala.xml > lala_temp.xml
 cat lala_temp.xml | sed -e 's/<?xml version=\"1.0\" encoding=\"gb2312\"?>/<?xml version=\"1.0\" encoding=\"utf-8\"?>/g' > lala.xml
 xmllint --format lala.xml > rss.xml
 
-cat rss.xml | sed -n '7,$p' | sed -e 's/<span[^>]*>//g' -e 's/<\/span>//g' \
-    -e 's/<p[^>]*>//g' -e 's/<\/p>//g' -e 's/<div[^>]*>//g' -e 's/<\/div>//g' -e 's/<strong>//g' \
-    -e 's/<\/strong>//g' -e 's/<u>//g' -e 's/<\/u>//g' -e 's/<b>//g' -e 's/<\/b>//g' -e 's/<a [^>]*>//g' \
-    -e 's/<\/a>//g' -e 's/<font[^>]*>//g' -e 's/<\/font>//g' -e 's/<o:p>//g' -e 's/<\/o:p>//g' \
-    -e 's/<b[^>]*>//g' -e 's/<\/b>//g'> rss.temp
+cat rss.xml | sed -n '7,$p' > rss.temp
 tac rss.temp > rss.xml
 
 cat rss.xml | grep -E '<description>' | sed -e 's/[ ]*<description><!\[CDATA\[//g' \
@@ -64,12 +61,7 @@ cat rss.xml | grep -E '<\/pubDate>' | \
     -e 's/Jul/07/g' -e 's/Aug/08/g' -e 's/Sep/09/g' -e 's/Oct/10/g' -e 's/Nov/11/g' -e 's/Dec/12/g' > pubDate.all
 
 cat rss.xml | grep -E '<title>' | \
-    sed -e 's/^[ ]*//' -e 's/<title><!\[CDATA\[//g' -e 's/\]\]><\/title>//g' \
-    -e 's/&amp;/\&/g' -e 's/&lt;/</g' -e 's/&gt;/>/g' -e 's/&middot;/·/g' \
-    -e 's/&ensp;/ /g' -e 's/&emsp;/ /g' -e 's/&times;/×/g' -e 's/&divide;/÷/g' -e 's/&mdash;/—/g' \
-    -e 's/&lsquo;/‘/g' -e 's/&rsquo;/’/g' -e 's/&sbquo;/‚/g' -e 's/&bdquo;/„/g' -e 's/&hellip;/…/g' \
-    -e 's/&quot;/\"/g' -e 's/&ldquo;/“/g' -e 's/&rdquo;/”/g' -e 's/&nbsp;//g' -e "s/&apos/'/g" \
-    -e 's/&lt;/</g' -e 's/&gt;/>/g'  > title.all
+    sed -e 's/^[ ]*//' -e 's/<title><!\[CDATA\[//g' -e 's/\]\]><\/title>//g' > title.all
 
 cat rss.xml | grep -E '<link>' | \
     sed -e 's/<link><!\[CDATA\[//g' -e 's/\]\]><\/link>//g' -e 's/[ ]*//g'> link.all
@@ -107,27 +99,29 @@ do
             convert $localserver/$endnode/$endnode.jpg -resize 100x100^ \
                 -gravity center -extent 100x100 $localserver/$endnode/$endnode.thumb
             convert $localserver/$endnode/$endnode.jpg -resize 280x140^ \
-                -gravity center -extent 280x140 $localserver/$endnode/$endnode.img
+                -gravity center -extent 250x250 $localserver/$endnode/$endnode.img
 	    echo "Node $endnode image converted!"
         fi
 
-        #服务器端生成文件
-        sed -n ''$(($i+1))'p' description.all  |  sed  -e 's/<img.*<\/description>$//g'  -e 's/\.\.\.\]\]><\/description>//g'  \
-            -e 's/\]\]><\/description>//g' -e 's/[ ]*<table[^>]*>[ ]*//g' -e 's/<st1[^>]*>//g' \
-            -e 's/<\/st1[^>]*>//g'  -e 's/[ ]*<\/table>[ ]*//g' \
-            -e 's/[ ]*<tbody[^>]*>[ ]*/\n/g' -e 's/[ ]*<\/tbody>[ ]*/\n/g' -e 's/[ ]*<tr[^>]*>[ ]*/\n/g' \
-            -e 's/[ ]*<\/tr>[ ]*//g' -e 's/[ ]*<td[^>]*>[ ]*//g' -e 's/[ ]*<\/td>[ ]*/\t/g' \
-            -e 's/<\/i>//g' -e 's/<i[^>]*>//g' | sed  -e 's/&amp;/\&/g' \
-            -e 's/&quot;/\"/g' -e 's/&ldquo;/“/g' -e 's/&rdquo;/”/g' -e 's/&nbsp;/ /g' -e "s/&apos/'/g" \
-            -e 's/&middot;/·/g' -e 's/&ensp;/ /g' -e 's/&emsp;/ /g' -e 's/&times;/×/g' -e 's/&divide;/÷/g' \
-            -e 's/&mdash;/—/g' -e 's/&lsquo;/‘/g' -e 's/&rsquo;/’/g' -e 's/&sbquo;/‚/g' -e 's/&bdquo;/„/g' \
-            -e 's/&hellip;/…/g' -e 's/&sup2;//g'  -e 's/<br \/>/\n/g' -e 's/&lt;/</g' -e 's/&gt;/>/g' >  $localserver/$endnode/$endnode.description
-        sed -n ''$(($i+1))'p' title.all | sed -e 's/<title>//g' -e 's/<\/title>//g' >  $localserver/$endnode/$endnode.title
-        sed -n ''$(($i+1))'p' link.all > $localserver/$endnode/$endnode.link
-	echo "${pubdate_all[$i]}" > $localserver/$endnode/$endnode.num
+        cat ./head > $localserver/$endnode/$endnode.html
+        sed -n ''$(($i+1))'p' title.all | sed -e 's/<title>//g' -e 's/<\/title>//g' >>  $localserver/$endnode/$endnode.html
+        cat ./title >> $localserver/$endnode/$endnode.html
         Newstimeout="${pubdate_year}年${pubdate_month}月${pubdate_day}日 ${pubdate_hour}:${pubdate_minute}"
         authorname=`sed -n ''$(($i+1))'p' author.all`
-        echo "$Newstimeout $authorname" > $localserver/$endnode/$endnode.time
+        echo "$Newstimeout $authorname" > $localserver/$endnode/$endnode.time >> $localserver/$endnode/$endnode.html
+        cat ./author >> $localserver/$endnode/$endnode.html 
+        
+        if [ -n "${jpgurl[$i]}" ]; then
+            echo "<a href=\"$httpserver/$endnode/$endnode.img\" rel=\"lightbox\"><img class=\"smallPic\" src=\"$httpserver/$endnode/$endnode.thumb\" width=\"100\" height=\"100\" alt=\"\" /></a>" >> $localserver/$endnode/$endnode.html
+        fi
+        sed -n ''$(($i+1))'p' description.all  |  sed  -e 's/<img.*<\/description>$//g'  -e 's/\.\.\.\]\]><\/description>//g'  \
+            -e 's/\]\]><\/description>//g' >>  $localserver/$endnode/$endnode.html
+        cat ./end >> $localserver/$endnode/$endnode.html
+
+        #服务器端生成文件
+       
+        sed -n ''$(($i+1))'p' link.all > $localserver/$endnode/$endnode.link
+	    echo "${pubdate_all[$i]}" > $localserver/$endnode/$endnode.num
 	
         #建立环状列表，循环更新
         let endnode=endnode+1
