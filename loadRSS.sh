@@ -40,7 +40,7 @@ echo "last news's time: $lasttime"
 #    mkdir $localserver/$i
 #done
 
-httpserver="http://219.217.227.65/iHIT"
+httpserver="http://yourhttpserver/iHIT"
 mainurl="http://today.hit.edu.cn"
 url="http://today.hit.edu.cn/rss.xml"
 
